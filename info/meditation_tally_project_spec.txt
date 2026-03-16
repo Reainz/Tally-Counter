@@ -1,0 +1,462 @@
+content = """Meditation Tally App - Project Specification
+=============================================
+
+Project Name
+------------
+Meditation Tally
+
+Project Type
+------------
+Android mobile application
+
+Project Summary
+---------------
+Meditation Tally is a simple offline-first Android app for counting meditation repetitions, breaths, mantras, or rounds.
+The app is designed to feel calm, minimal, and fast to use. It stores data locally on the device and restores the current
+state automatically when reopened.
+
+Primary Goal
+------------
+Create a distraction-free tally counter for meditation practice with reliable local persistence and optional per-day history.
+
+Target Users
+------------
+- People counting breaths during meditation
+- People tracking mantra repetitions
+- Users who want a simple daily count app without cloud sync
+- Users who prefer a minimal, calming interface
+
+Core Product Principles
+-----------------------
+- Minimal and focused
+- Fast one-hand interaction
+- Offline-first
+- Auto-save on every action
+- Calm visual design
+- No unnecessary complexity in the first release
+
+Reference Design Direction
+--------------------------
+The original reference design used:
+- A dark background with bright cyan accent color
+- A large circular central count display
+- A curved progress arc around the main circle
+- Small action icons near the top area
+- Simple, bold, highly legible count text
+- Minimal navigation and decorative elements
+
+The approved app design adapts that idea into a calmer meditation-oriented UI:
+- Light mint / sage visual theme
+- Centered large circular count area
+- Progress ring or arc for daily target progress
+- Clean top area with date and title
+- Entire main circle as the primary tap target for incrementing the count
+- Secondary actions for Undo, Reset, and History
+- Calm and modern meditation-oriented styling
+
+Product Scope
+-------------
+Version 1 should focus on:
+- Current tally for today
+- Primary tap circle for incrementing by 1
+- Reset action with confirmation
+- Auto-save to local storage
+- Daily history
+- Optional daily target
+
+Recommended MVP Features
+------------------------
+1. Home Screen
+   - Show today's date
+   - Show current count in large format
+   - Show daily target progress
+   - Large tappable main counter circle
+   - Goal label such as "20 / 108"
+   - Undo button
+   - Reset button
+   - Quick access to history
+
+2. Local Persistence
+   - Save current count automatically after each tap
+   - Restore saved state when app opens
+   - Store history by date
+   - Work fully offline
+
+3. History
+   - Show counts grouped by day
+   - Display date and total count for each day
+   - Keep history stored locally on device
+
+4. Reset Logic
+   - Manual reset with confirmation dialog
+   - Automatic new day handling
+   - When date changes, app starts a fresh count for the new day
+   - Previous day's count remains in history
+
+5. Daily Target
+   - Optional target such as 21, 54, or 108
+   - Progress ring or arc fills based on target completion
+   - Current count can continue past the target if user wants
+
+Feature List
+------------
+Must-have
+- Current tally display
+- Tappable main counter circle for +1
+- Undo last increment
+- Reset with confirmation
+- Local auto-save
+- Per-day history
+- Daily date awareness
+- Goal label for current progress
+- Offline functionality
+
+Nice-to-have
+- Haptic feedback on tap
+- Pressed animation on main tap circle
+- Dark mode and light mode theme variants
+- Goal presets: 21, 54, 108
+- Simple completion message when target is reached
+- Session label or note for the day
+
+Future Features
+---------------
+- Streak tracking
+- Weekly and monthly charts
+- Export history
+- Home screen widget
+- Reminder notifications
+- Multiple counter modes
+- Backup and restore
+
+Primary Screens
+---------------
+1. Home Screen
+   Purpose:
+   - Main daily interaction screen
+
+   Main Elements:
+   - Header with app title or "Today"
+   - Current date
+   - Large circular tally display
+   - Progress arc around tally circle
+   - Entire tally circle acts as the primary tap target
+   - Secondary actions: Undo, Reset, History
+   - Current count and target label such as "20 / 108"
+
+2. History Screen
+   Purpose:
+   - View previous daily counts
+
+   Main Elements:
+   - List of dates
+   - Count total per date
+   - Optional target completion indicator
+   - Empty state when no history exists
+
+3. Settings Screen
+   Purpose:
+   - Configure app behavior
+
+   Main Elements:
+   - Enable or disable daily target
+   - Set target number
+   - Enable or disable haptic feedback
+   - Choose theme
+   - Toggle optional daily reset behavior if included
+
+UI/UX Specification
+-------------------
+Visual Style
+- Minimal
+- Calm
+- Modern
+- Spacious layout
+- High contrast count number
+- Rounded buttons and cards
+- Soft shadows or glow effects used sparingly
+- Strong visual focus on the main tap circle
+- Secondary buttons remain visually softer than the main action
+
+Suggested Color Direction
+- Background: light mint / sage gradient
+- Accent: soft green / muted teal
+- Text: dark desaturated green or high-contrast neutral
+- Progress track: muted accent shade
+- Success state: subtle brighter accent
+
+Home Screen Layout
+------------------
+Top Area
+- App title or "Today"
+- Date label
+
+Center Area
+- Large tappable circle containing count
+- Large number centered vertically and horizontally
+- Progress arc around circle
+- Optional subtle glow behind the circle
+
+Support Area
+- Small target text such as "20 / 108" below or near the main circle
+
+Bottom Area
+- Smaller action buttons for Undo, Reset, and History
+
+Interaction Design
+------------------
+Primary Tap Circle
+- Most prominent interactive element
+- Single tap increments count by 1
+- Immediate visual update
+- Immediate local save
+- Optional haptic feedback
+- Subtle pressed animation to confirm interaction
+
+Undo Button
+- Reverts the most recent increment
+- Disabled when no action can be undone
+- Visually softer than the primary tap circle
+
+Reset Button
+- Opens confirmation dialog before resetting today's count
+- Does not delete past days' history
+
+History Button
+- Opens history screen
+
+Behavior Rules
+--------------
+Count Increment
+- Tap the main circle
+- Count updates immediately
+- Save to storage immediately
+- Update progress indicator
+- Trigger subtle tap feedback if enabled
+
+Date Change
+- On app open or app resume, check device local date
+- If a new date has started, create a new daily record with count 0
+- Keep previous day data unchanged
+
+Reset Behavior
+- Reset only today's count
+- Save reset state immediately
+- Do not erase previous history unless there is a separate clear-history option
+
+Progress Calculation
+- If target is enabled:
+  progress = current_count / target
+- Progress ring caps visually at 100 percent
+- Numeric count can continue increasing beyond target
+
+Data Model
+----------
+Recommended daily record structure:
+
+DailyRecord
+- date: String (ISO format, example: 2026-03-09)
+- count: Int
+- target: Int? (optional)
+- updatedAt: Long timestamp
+
+AppState
+- todayDate: String
+- todayCount: Int
+- targetEnabled: Boolean
+- targetValue: Int
+- hapticsEnabled: Boolean
+- themeMode: String
+- history: List<DailyRecord>
+
+Local Storage Recommendation
+----------------------------
+Preferred options:
+
+Option A: Jetpack DataStore
+Best for:
+- Very small apps
+- Simpler state persistence
+- Quick MVP
+
+Option B: Room Database
+Best for:
+- Daily history
+- Future analytics and charts
+- Cleaner structure as app grows
+
+Recommendation:
+Use Room if per-day history is part of version 1.
+Use DataStore for preferences such as:
+- Target enabled
+- Target value
+- Theme
+- Haptic setting
+
+Suggested Tech Stack
+--------------------
+- Language: Kotlin
+- UI: Jetpack Compose
+- Architecture: MVVM
+- Local database: Room
+- Preferences: DataStore
+- Dependency injection: Hilt (optional)
+- Navigation: Navigation Compose
+
+Suggested Package Structure
+---------------------------
+- ui/
+  - home/
+  - history/
+  - settings/
+  - components/
+  - theme/
+
+- data/
+  - local/
+  - repository/
+  - model/
+
+- domain/
+  - model/
+  - usecase/
+
+- util/
+
+Functional Requirements
+-----------------------
+FR-01
+The system shall display today's current tally on the home screen.
+
+FR-02
+The system shall allow the user to increment the tally by 1 with a single tap on the main counter circle.
+
+FR-03
+The system shall save the tally locally after every increment, undo, or reset action.
+
+FR-04
+The system shall restore the latest saved tally state when the app is reopened.
+
+FR-05
+The system shall maintain a daily history of tally counts indexed by date.
+
+FR-06
+The system shall support resetting today's tally after user confirmation.
+
+FR-07
+The system shall support automatic transition to a new daily record when the date changes.
+
+FR-08
+The system shall allow the user to view past daily counts in the history screen.
+
+FR-09
+The system shall optionally support a user-defined daily target.
+
+FR-10
+The system shall work without internet access.
+
+Non-Functional Requirements
+---------------------------
+NFR-01
+The app should open quickly and feel responsive.
+
+NFR-02
+The app should preserve data reliably across app restarts.
+
+NFR-03
+The app should be fully usable offline.
+
+NFR-04
+The UI should be readable at a glance and suitable for one-hand use.
+
+NFR-05
+The app should keep user interactions to a minimum and avoid clutter.
+
+User Flow
+---------
+Primary Daily Flow
+1. User opens app
+2. App restores today's saved count
+3. User taps the main circle during meditation
+4. App updates count and progress immediately
+5. App saves updated value locally
+6. User optionally views history later
+
+Reset Flow
+1. User taps Reset
+2. Confirmation dialog appears
+3. User confirms reset
+4. Today's count becomes 0
+5. State is saved immediately
+
+History Flow
+1. User taps History
+2. App opens history list
+3. User reviews past daily totals
+
+Acceptance Criteria
+-------------------
+- Count persists after closing and reopening app
+- Daily history remains available across launches
+- Reset affects only the current day
+- Undo correctly reverses the latest increment
+- Date change creates a new day's counter automatically
+- UI remains simple and uncluttered
+- Main count remains the visual focus of the app
+- Main circle is clearly the primary input target
+- Goal label is visible and improves progress clarity
+- Reset uses a confirmation dialog
+- Tap feedback includes subtle animation and optional haptics
+
+Proposed Milestones
+-------------------
+Milestone 1 - Product Definition
+- Finalize feature list
+- Finalize navigation structure
+- Confirm visual direction
+
+Milestone 2 - UI Implementation
+- Build Home screen in Compose
+- Build reusable action buttons
+- Build progress ring
+- Build tappable main counter circle
+- Build History screen
+- Build Settings screen
+
+Milestone 3 - Data Layer
+- Create Room entities and DAO
+- Create repositories
+- Persist preferences with DataStore
+
+Milestone 4 - Logic and Testing
+- Implement date rollover logic
+- Implement undo and reset flows
+- Test local persistence and history correctness
+
+Milestone 5 - Polish
+- Add haptics
+- Improve animations
+- Tune spacing, shadows, and typography
+- Add empty states and confirmations
+
+Open Product Decisions
+----------------------
+- Should goals be enabled by default?
+- Should history include notes or only counts?
+- Should users be able to clear all history from settings?
+- Should the progress arc remain visible when no goal is enabled?
+
+Recommended Final Direction
+---------------------------
+Build a calm, offline-first Android meditation tally app with:
+- One highly polished home screen
+- Large circular tap counter
+- Progress arc and goal label
+- Undo, Reset, and History
+- Local daily history
+- Optional daily target
+- Minimal settings
+- Strong visual inspiration from the provided reference design and approved mint-themed UI
+
+End of Specification
+"""
